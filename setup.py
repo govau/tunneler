@@ -8,7 +8,7 @@ readme = io.open('README.rst').read()
 
 setup(
     name='tunneler',
-    version='0.1.1490665985',
+    version='0.1.1490677240',
     url='https://github.com/govau/tunneler',
     description='Connect to databases via ssh tunnel',
     long_description=readme,

@@ -4,7 +4,7 @@ import io
 import yaml
 from contextlib import contextmanager
 
-
+import six
 import paramiko
 from sshtunnel import SSHTunnelForwarder
 
@@ -36,7 +36,9 @@ def connection_from_settings(
         private_port=5432,
         remote_port=22):
 
-    pk = paramiko.RSAKey.from_private_key(file_obj=io.StringIO(ssh_pkey))
+    pk = paramiko.RSAKey.from_private_key(
+        file_obj=io.StringIO(six.text_type(ssh_pkey))
+    )
 
     private_host = host_from_dburl(private_dburl)
     connection_url = local_dburl(private_dburl, local_port)
