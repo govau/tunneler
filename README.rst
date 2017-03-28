@@ -41,6 +41,20 @@ Define connections in a ``connections.yaml`` file in your current directory, as 
     dev:
       .....
 
+You can also specify an ssh_config variable in the config. ``tunneler`` will then use the values from that hosts ssh config. An example:
+
+.. code-block:: yaml
+
+    prod:
+      ssh_config: prod-jumpbox
+      private_dburl: postgres://username:password@privatedbservername/databasename
+      local_port: 5433
+
+    dev:
+      .....
+
+This will use the remote host/username/private key specified in your existing ssh config so you don't need to repeat them in the config file
+
 Tunneler will use this information to set up a local tunneled post where you can access this database directly.
 
 A connection URL to this local port will then be provided to each ``task``.
