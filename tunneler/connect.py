@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import io
+import os
 import yaml
 from contextlib import contextmanager
 
@@ -11,9 +12,47 @@ from sshtunnel import SSHTunnelForwarder
 from .util import host_from_dburl, local_dburl
 
 
+SSH_CONFIG_FILE = '~/.ssh/config'
+
+
+def get_ssh_config(ssh_name):
+    ssh_config = paramiko.SSHConfig()
+    user_config_file = os.path.expanduser(SSH_CONFIG_FILE)
+
+    with io.open(user_config_file) as f:
+        ssh_config.parse(f)
+
+    cfg = {}
+
+    user_config = ssh_config.lookup(ssh_name)
+
+    for k in ('hostname', 'user', 'port', 'identityfile'):
+        if k in user_config:
+            cfg[k] = user_config[k]
+    cfg['ssh_username'] = cfg.pop('user', None)
+    cfg['remote_host'] = cfg.pop('hostname', None)
+    cfg['remote_port'] = cfg.pop('port', None)
+
+    if cfg['identityfile']:
+        with io.open(cfg['identityfile'][0]) as f:
+            cfg['ssh_pkey'] = f.read()
+        del cfg['identityfile']
+
+    cfg = {k: v for k, v in cfg.items() if v}
+    return cfg
+
+
 def get_config(filename='connections.yaml'):
     with io.open(filename) as f:
         config = yaml.load(f.read())
+
+    for k, values in config.items():
+        if 'ssh_config' in values:
+            ssh_config = get_ssh_config(values['ssh_config'])
+            config_from_file = config[k]
+            del config_from_file['ssh_config']
+            ssh_config.update(config_from_file)
+            config[k] = ssh_config
     return config
 
 
