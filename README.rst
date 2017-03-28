@@ -9,6 +9,12 @@ To install:
 
     $ pip install tunneler
 
+You will probably also need the database drivers for your preferred database. To install the postgres ones automatically when you install ``tunneler``, do this:
+
+.. code-block:: shell
+
+    $ pip install tunneler[pg]
+
 To run:
 
 .. code-block:: shell
@@ -42,8 +48,8 @@ A connection URL to this local port will then be provided to each ``task``.
 There are three inbuilt tasks:
 
   - test_connection (run this one to check your config is correct)
-  - do_full_pg_dump
-  - do_schema_pg_dump
+  - do_full_pg_dump (assumes you have pg_dump installed)
+  - do_schema_pg_dump (also assumes you have pg_dump installed)
 
 So for example to dump the production schema we'd run the following command:
 
