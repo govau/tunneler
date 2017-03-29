@@ -1,7 +1,0 @@
--e .
-
-pytest
-pytest-sugar
-pytest-cov
-psycopg2
-flake8
